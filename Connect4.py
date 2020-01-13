@@ -177,24 +177,20 @@ class GameEnv(Environment):
 
         return self.observation.data, {}
 
-    def new_env(self, data, agents: List) -> object:
-        return _new_env(data, agents)
-
-
-def _new_env(data, agents: List) -> GameEnv:
-    env = GameEnv()
-    env.observation = GameState()
-    env.observation.data = np.copy(data)
-    env.turn = 0
-    shape = env.observation.data.shape
-    for i in env.observation.data.reshape(-1):
-        if i != 0:
-            env.turn += 1
-    env.observation.data.reshape(shape)
-    env.done = False
-    env.winner = False
-    env.agents = agents
-    return env
+    def new_env(self, data, agents: List) -> "Environment":
+        env = GameEnv()
+        env.observation = GameState()
+        env.observation.data = np.copy(data)
+        env.turn = 0
+        shape = env.observation.data.shape
+        for i in env.observation.data.reshape(-1):
+            if i != 0:
+                env.turn += 1
+        env.observation.data.reshape(shape)
+        env.done = False
+        env.winner = False
+        env.agents = agents
+        return env
 
 
 class GameOptimizer(AlphaZeroOptimizer):

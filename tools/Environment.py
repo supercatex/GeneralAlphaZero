@@ -25,7 +25,7 @@ class Environment(ABC):
         self.done = False
 
     @abstractmethod
-    def new_env(self, data, agents: List) -> object:
+    def new_env(self, data, agents: List) -> "Environment":
         pass
 
     def nb_agent(self) -> int:
