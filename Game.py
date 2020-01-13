@@ -109,13 +109,12 @@ class GameState(Observation):
         state = np.reshape(state, (self.nb_row, self.nb_col))
         return state
 
-
     def __str__(self):
         s = ""
         for i in range(self.nb_col):
             s += "_＿"
         s += "_\n"
-        for row in self.data:
+        for row in np.flip(self.data, axis=0):
             for col in row:
                 s += "|" + self.STATES[col]
             s += "|\n"
