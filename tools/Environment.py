@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod
 from typing import List, Tuple
-from tools import Observation
+from abc import ABC, abstractmethod
+import numpy as np
 from tools import Agent
 from tools import Action
-import numpy as np
+from tools import Observation
 
 
 class Environment(ABC):

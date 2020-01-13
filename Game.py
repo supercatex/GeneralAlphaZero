@@ -222,7 +222,7 @@ if __name__ == "__main__":
 
     _env = GameEnv()
     _model = AlphaZeroModel(_env.observation)
-    _model.load("model_best_config.json", "model_best_weight.h5")
+    _model.load("model_data/model_best_config.json", "model_data/model_best_weight.h5")
 
     _p1 = GameAgent(1, _model, _env)
     _p2 = GameAgent(2, _model, _env)

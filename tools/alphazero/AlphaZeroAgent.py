@@ -1,11 +1,11 @@
-from abc import abstractmethod
 from typing import List
+from abc import abstractmethod
 from collections import defaultdict, namedtuple
-from asyncio.queues import Queue
 import asyncio
 import numpy as np
-from tools import Agent, Environment, Action
+from asyncio.queues import Queue
 from tools.alphazero import AlphaZeroModel
+from tools import Agent, Environment, Action
 
 
 CounterKey = namedtuple("CounterKey", "board next_player")
