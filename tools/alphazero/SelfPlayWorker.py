@@ -49,7 +49,6 @@ class SelfPlayWorker(object):
         if not os.path.exists(self.play_data_dir):
             os.mkdir(self.play_data_dir)
         with open(path, "wt") as f:
-            print(self.buffer)
             json.dump(self.buffer, f)
         self.buffer = []
 
