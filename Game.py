@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple
 from tools import Environment, Observation, Action, Agent
-from tools.alphazero import AlphaZeroAgent, AlphaZeroModel
+from tools.alphazero import AlphaZeroAgent, AlphaZeroModel, AlphaZeroOptimizer
 
 
 class GameState(Observation):
@@ -99,6 +99,17 @@ class GameState(Observation):
                 s += self.STATES[col]
         return s
 
+    def record_decode(self, data: str) -> List:
+        state: List[int] = []
+        for c in data:
+            for i in range(len(self.STATES)):
+                if c == self.STATES[i]:
+                    state.append(i)
+                    break
+        state = np.reshape(state, (self.nb_row, self.nb_col))
+        return state
+
+
     def __str__(self):
         s = ""
         for i in range(self.nb_col):
@@ -129,16 +140,6 @@ class GameAgent(AlphaZeroAgent):
             if state.data[state.nb_row - 1][j] == 0:
                 actions[j] = 1
         return actions
-
-
-class HumanAgent(Agent):
-
-    def action(self, env: Environment) -> Action:
-        s = input("Your turn: ")
-        return Action(int(s))
-
-    def reset(self):
-        pass
 
 
 class GameEnv(Environment):
@@ -187,26 +188,27 @@ def _new_env(data, agents: List) -> GameEnv:
     env.agents = agents
     return env
 
-# class GameOptimizer(AlphaZeroOptimizer):
-#
-#     def convert_to_training_data(self, data):
-#         state_list = []
-#         policy_list = []
-#         z_list = []
-#         for state, policy, z in data:
-#             board = list(state)
-#             board = np.reshape(board, (6, 7))
-#             env: GameEnv = GameEnv().new_env(board, [GameAgent(1), GameAgent(2)])
-#
-#             planes = env.planes()
-#             black_ary, white_ary = planes[0], planes[1]
-#             state = [black_ary, white_ary] if env.current_agent_index() == 2 else [white_ary, black_ary]
-#
-#             state_list.append(state)
-#             policy_list.append(policy)
-#             z_list.append(z)
-#
-#         return np.array(state_list), np.array(policy_list), np.array(z_list)
+
+class GameOptimizer(AlphaZeroOptimizer):
+
+    def convert_to_training_data(self, data):
+        state_list = []
+        policy_list = []
+        z_list = []
+        for state, policy, z in data:
+            board = self.env.observation.record_decode(state)
+            print(board)
+            env: GameEnv = _new_env(board, self.env.agents)
+
+            planes = env.planes()
+            black_ary, white_ary = planes[0], planes[1]
+            state = [black_ary, white_ary] if env.current_agent_index() == 2 else [white_ary, black_ary]
+
+            state_list.append(state)
+            policy_list.append(policy)
+            z_list.append(z)
+
+        return np.array(state_list), np.array(policy_list), np.array(z_list)
 
 
 if __name__ == "__main__":
@@ -222,16 +224,20 @@ if __name__ == "__main__":
 
     _env = GameEnv()
     _model = AlphaZeroModel(_env.observation)
-    _model.load("model_data/model_best_config.json", "model_data/model_best_weight.h5")
 
     _p1 = GameAgent(1, _model, _env)
     _p2 = GameAgent(2, _model, _env)
     _env.add_agent(_p1)
     _env.add_agent(_p2)
 
-    from tools.alphazero import SelfPlayWorker
-    _worker = SelfPlayWorker(_env)
-    _worker.start()
+    while True:
+        _model.load("model_data/model_best_config.json", "model_data/model_best_weight.h5")
 
-    # _optimizer = GameOptimizer(_env, "play_data")
-    # _optimizer.training()
+        from tools.alphazero import SelfPlayWorker
+        _worker = SelfPlayWorker(_env)
+        _worker.start()
+
+        _optimizer = GameOptimizer(_env, "play_data")
+        _optimizer.training()
+
+        _optimizer.model.save("model_data/model_best_config.json", "model_data/model_best_weight.h5")

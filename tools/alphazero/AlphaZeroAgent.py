@@ -75,7 +75,7 @@ class AlphaZeroAgent(Agent):
             list(self.var_n[key])
         )
 
-        self.moves.append([new_env.observation.record_encode(), [policy.tolist()]])
+        self.moves.append([new_env.observation.record_encode(), policy.tolist()])
         return Action(action)
 
     def reset(self):

@@ -116,7 +116,14 @@ class AlphaZeroModel(object):
         if config_path is None or weight_path is None:
             self.build()
         elif not os.path.exists(config_path) or not os.path.exists(weight_path):
+            path = os.path.dirname(config_path)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            path = os.path.dirname(weight_path)
+            if not os.path.exists(path):
+                os.mkdir(path)
             self.build()
+            self.save(config_path, weight_path)
         else:
             with open(config_path, "rt") as f:
                 self.model = Model.from_config(json.load(f))

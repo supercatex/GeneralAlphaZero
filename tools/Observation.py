@@ -22,3 +22,7 @@ class Observation(ABC):
     @abstractmethod
     def record_encode(self) -> str:
         pass
+
+    @abstractmethod
+    def record_decode(self, data: str) -> List:
+        pass
