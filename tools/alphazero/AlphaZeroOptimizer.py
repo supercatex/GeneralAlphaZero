@@ -18,17 +18,17 @@ class AlphaZeroOptimizer(ABC):
         self.dataset = None
         self.env: Environment = env
         self.data_path = data_path
-        self.epochs = 1
+        self.epochs = 10
         self.batch_size = 32
-        self.save_model_steps = 300
+        self.save_model_steps = 100
         self.next_generation_model_dir = os.path.join("", "model_data")
         self.next_generation_model_dirname_tmpl = "model_%s"
         self.next_generation_model_config_filename = "model_config.json"
         self.next_generation_model_weight_filename = "model_weight.h5"
         self.terminal = 5
 
-    def training(self):
-        self.model = self.load_model()
+    def training(self, config_path, weight_path):
+        self.model = self.load_model(config_path, weight_path)
         self.compile_model()
         self.load_data(self.data_path)
 

@@ -99,15 +99,14 @@ class GameState(Observation):
                 s += self.STATES[col]
         return s
 
-    def record_decode(self, data: str) -> List:
+    def record_decode(self, data: str) -> np.ndarray:
         state: List[int] = []
         for c in data:
             for i in range(len(self.STATES)):
                 if c == self.STATES[i]:
                     state.append(i)
                     break
-        state = np.reshape(state, (self.nb_row, self.nb_col))
-        return state
+        return np.reshape(state, (self.nb_row, self.nb_col))
 
     def __str__(self):
         s = ""
@@ -201,7 +200,7 @@ class GameOptimizer(AlphaZeroOptimizer):
         z_list = []
         for state, policy, z in data:
             board = self.env.observation.record_decode(state)
-            env: GameEnv = _new_env(board, self.env.agents)
+            env: Environment = self.env.new_env(board, self.env.agents)
 
             planes = env.planes()
             black_ary, white_ary = planes[0], planes[1]

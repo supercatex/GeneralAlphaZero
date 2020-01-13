@@ -5,7 +5,7 @@ from tools.alphazero import SelfPlayWorker
 import tensorflow as tf
 config = tf.compat.v1.ConfigProto(
     gpu_options=tf.compat.v1.GPUOptions(
-        per_process_gpu_memory_fraction=0.2,
+        per_process_gpu_memory_fraction=0.5,
         allow_growth=None,
     )
 )
@@ -49,7 +49,7 @@ for k in range(100000000):
 
     # optimization
     _optimizer = GameOptimizer(_env, _dir_data)
-    _optimizer.training()
+    _optimizer.training("model_data/model_config.json", "model_data/model_weight.h5")
 
     # evaluation
     while True:
