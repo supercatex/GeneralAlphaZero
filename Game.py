@@ -141,6 +141,15 @@ class GameAgent(AlphaZeroAgent):
         return actions
 
 
+class HumanAgent(Agent):
+
+    def action(self, env: Environment) -> Action:
+        return Action(int(input("Please input: ")))
+
+    def reset(self):
+        pass
+
+
 class GameEnv(Environment):
     def __init__(self):
         self.state = GameState()
@@ -196,7 +205,6 @@ class GameOptimizer(AlphaZeroOptimizer):
         z_list = []
         for state, policy, z in data:
             board = self.env.observation.record_decode(state)
-            print(board)
             env: GameEnv = _new_env(board, self.env.agents)
 
             planes = env.planes()
@@ -230,7 +238,7 @@ if __name__ == "__main__":
     _env.add_agent(_p2)
 
     while True:
-        _model.load("model_data/model_best_config.json", "model_data/model_best_weight.h5")
+        _model.load("model_data/model_config.json", "model_data/model_weight.h5")
 
         from tools.alphazero import SelfPlayWorker
         _worker = SelfPlayWorker(_env)
@@ -238,5 +246,3 @@ if __name__ == "__main__":
 
         _optimizer = GameOptimizer(_env, "play_data")
         _optimizer.training()
-
-        _optimizer.model.save("model_data/model_best_config.json", "model_data/model_best_weight.h5")

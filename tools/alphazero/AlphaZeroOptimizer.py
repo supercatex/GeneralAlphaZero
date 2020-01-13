@@ -25,6 +25,7 @@ class AlphaZeroOptimizer(ABC):
         self.next_generation_model_dirname_tmpl = "model_%s"
         self.next_generation_model_config_filename = "model_config.json"
         self.next_generation_model_weight_filename = "model_weight.h5"
+        self.terminal = 5
 
     def training(self):
         self.model = self.load_model()
@@ -39,13 +40,11 @@ class AlphaZeroOptimizer(ABC):
             print(f"Epochs: {total_steps // steps}")
             if (total_steps // steps) % self.save_model_steps == 0:
                 self.save_current_model()
-                break
+                if (total_steps // steps) // self.save_model_steps == self.terminal:
+                    break
 
     def train_epoch(self, epochs):
         state_ary, policy_ary, z_ary = self.dataset
-        print("S:", state_ary.shape)
-        print("P:", policy_ary.shape)
-        print("Z:", z_ary.shape)
         self.model.model.fit(state_ary, [policy_ary, z_ary],
                              batch_size=self.batch_size,
                              epochs=epochs)
