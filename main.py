@@ -11,7 +11,7 @@ tf.compat.v1.keras.backend.set_session(sess)
 
 _env = GameEnv()
 _model = AlphaZeroModel(_env.observation)
-_model.load("model_data/model_best_config.json", "model_data/model_best_weight.h5")
+_model.load("model_data/model_config.json", "model_data/model_weight.h5")
 
 _p1 = GameAgent(1, _model, _env)
 _p2 = HumanAgent(2)

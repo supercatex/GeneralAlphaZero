@@ -12,11 +12,13 @@ config = tf.compat.v1.ConfigProto(
 sess = tf.compat.v1.Session(config=config)
 tf.compat.v1.keras.backend.set_session(sess)
 
+
 # define directories
 _dir_model = "model_data"
 _filename_config = "model_config.json"
 _filename_weight = "model_weight.h5"
 _dir_data = "play_data"
+_threshold = 0.55
 
 # Game settings
 _env = GameEnv()
@@ -79,12 +81,17 @@ while True:
             _win += 1
         elif _env.winner == -1:
             _draw += 1
-        print(f"Game {i + 1}: {_win}/{_total}({_draw})", _env.winner)
-        if _win / (_total - _draw) > 0.5:
+        print(f"Game {i + 1}: {_win}/{_total}({_draw})"
+              f"-- {_win / (_total - _draw)} -- {_env.observation.STATES[_env.winner]}")
+        if _win / (_total - _draw) > _threshold:
             print("Best model changed.")
             _model_next.save(
                 os.path.join(_dir_model, _filename_config),
                 os.path.join(_dir_model, _filename_weight)
             )
+            break
+        elif (_win + _total - _draw - i) / (_total - _draw) <= _threshold:
+            print("Keep the old one.")
+            break
     shutil.rmtree(_dir_next_model)
-print("Finished...")
+print("Finished.")
