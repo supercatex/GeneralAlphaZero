@@ -1,6 +1,6 @@
 import os
 import shutil
-from Game import *
+from Connect4 import *
 from tools.alphazero import SelfPlayWorker
 import tensorflow as tf
 config = tf.compat.v1.ConfigProto(
@@ -31,6 +31,8 @@ _env.add_agent(_p1)
 _env.add_agent(_p2)
 
 for k in range(100000000):
+    print(f"Round {k + 1}:")
+
     # self-play, play with two best model.
     _model_best.load(
         os.path.join(_dir_model, _filename_config),

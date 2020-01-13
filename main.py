@@ -1,4 +1,4 @@
-from Game import *
+from Connect4 import *
 import tensorflow as tf
 config = tf.compat.v1.ConfigProto(
     gpu_options=tf.compat.v1.GPUOptions(
