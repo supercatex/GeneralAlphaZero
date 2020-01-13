@@ -32,7 +32,7 @@ class SelfPlayWorker(object):
             agent: Agent = self.env.current_agent()
             action = agent.action(self.env)
             self.env.step(action)
-            print(self.env.observation, self.env.turn, self.env.winner)
+            # print(self.env.observation, self.env.turn, self.env.winner)
         self.finish_game()
         self.save_play_data(write=idx % self.nb_game_in_file == 0)
         self.remove_play_data()
