@@ -49,7 +49,10 @@ for k in range(100000000):
 
     # optimization
     _optimizer = GameOptimizer(_env, _dir_data)
-    _optimizer.training("model_data/model_config.json", "model_data/model_weight.h5")
+    _optimizer.training(
+        os.path.join(_dir_model, _filename_config),
+        os.path.join(_dir_model, _filename_weight)
+    )
 
     # evaluation
     while True:
